@@ -49,79 +49,93 @@ function stopDrawing() {
 function handleTouchStart(e) {
   e.preventDefault();
   const touch = e.touches[0];
-  startDrawing({ clientX: touch.clientX, clientY: touch.clientY });
+  startDrawing(touch);
 }
 
 function handleTouchMove(e) {
   e.preventDefault();
   const touch = e.touches[0];
-  draw({ clientX: touch.clientX, clientY: touch.clientY });
+  draw(touch);
 }
 
 // Clear signature
-document.getElementById('clearSignature').addEventListener('click', () => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-});
+const clearBtn = document.getElementById('clearSignature');
+if (clearBtn) {
+  clearBtn.addEventListener('click', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  });
+}
 
 // ===============================
 // Form Submission
 // ===============================
-document.getElementById('rotcForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
+const form = document.getElementById('rotcForm');
+if (form) {
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-  const signatureData = canvas.toDataURL();
+    const getValue = (id) => {
+      const el = document.getElementById(id);
+      if (!el) console.warn(`Element with ID "${id}" not found`);
+      return el ? el.value : '';
+    };
 
-  const formData = {
-    timestamp: new Date().toISOString(),
-    retRank: document.getElementById('retRank').value,
-    familyName: document.getElementById('familyName').value,
-    firstName: document.getElementById('firstName').value,
-    mi: document.getElementById('mi').value,
-    afpsn: document.getElementById('afpsn').value,
-    dateOfBirth: document.getElementById('dob').value,
-    status: document.querySelector('input[name="status"]:checked')?.value || '',
-    spouse: document.getElementById('spouse').value,
-    address: document.getElementById('address').value,
-    cellPhone: document.getElementById('cellPhone').value,
-    email: document.getElementById('email').value,
-    dateEntered: document.getElementById('dateEntered').value,
-    location: document.getElementById('location').value,
-    rcdu: document.getElementById('rcdu').value,
-    rcdg: document.getElementById('rcdg').value,
-    lastUnit: document.getElementById('lastUnit').value,
-    lastLocation: document.getElementById('lastLocation').value,
-    retirementDate: document.getElementById('retirementDate').value,
-    admissionDate: document.getElementById('admissionDate').value,
-    signatureDate: document.getElementById('signatureDate').value,
-    signature: signatureData
-  };
+    const signatureData = canvas.toDataURL();
 
-  try {
-    const GOOGLE_SCRIPT_URL =
-      'https://script.google.com/macros/s/AKfycbzTjVoI8A_9e0TSpYG1TrUpNnfnGqNXTyDuEJrkd0PwDBGfIM5iF4vBHQVpSssI7A4r/exec';
+    const formData = {
+      timestamp: new Date().toISOString(),
+      retRank: getValue('retRank'),
+      familyName: getValue('familyName'),
+      firstName: getValue('firstName'),
+      mi: getValue('mi'),
+      afpsn: getValue('afpsn'),
+      dateOfBirth: getValue('dob'),
+      status: document.querySelector('input[name="status"]:checked')?.value || '',
+      spouse: getValue('spouse'),
+      address: getValue('address'),
+      cellPhone: getValue('cellPhone'),
+      email: getValue('email'),
+      dateEntered: getValue('dateEntered'),
+      location: getValue('location'),
+      rcdu: getValue('rcdu'),
+      rcdg: getValue('rcdg'),
+      lastUnit: getValue('lastUnit'),
+      lastLocation: getValue('lastLocation'),
+      retirementDate: getValue('retirementDate'),
+      admissionDate: getValue('admissionDate'),
+      signatureDate: getValue('signatureDate'),
+      signature: signatureData
+    };
 
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    });
+    try {
+      const GOOGLE_SCRIPT_URL =
+        'https://script.google.com/macros/s/AKfycbzTjVoI8A_9e0TSpYG1TrUpNnfnGqNXTyDuEJrkd0PwDBGfIM5iF4vBHQVpSssI7A4r/exec';
 
-    const result = await response.json();
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
 
-    if (result.success) {
-      alert('Registration submitted successfully!');
-      document.getElementById('rotcForm').reset();
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      document.getElementById('signatureDate').valueAsDate = new Date();
-    } else {
-      throw new Error(result.error || 'Unknown error');
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        alert('Registration submitted successfully!');
+        form.reset();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        document.getElementById('signatureDate').valueAsDate = new Date();
+      } else {
+        alert('Submission failed: ' + (result.message || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Submission Error:', error);
+      alert('Submission failed. Please check console for details.');
     }
+  });
+}
 
-  } catch (error) {
-    console.error('Submission Error:', error);
-    alert('Submission failed. Please contact the administrator.');
-  }
-});
-
-// Auto-fill today's date for signature date
-document.getElementById('signatureDate').valueAsDate = new Date();
+// Auto-fill today's date
+const signatureDateInput = document.getElementById('signatureDate');
+if (signatureDateInput) {
+  signatureDateInput.valueAsDate = new Date();
+}
