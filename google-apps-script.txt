@@ -1,86 +1,77 @@
 // ============================================
-// GOOGLE APPS SCRIPT CODE
-// Copy and paste this entire code into your Google Apps Script editor
+// ROTC ADMIN GOOGLE APPS SCRIPT
 // ============================================
 
+// Handle POST requests (Add/Delete registration)
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    
+    const headers = sheet.getDataRange().getValues()[0]; // First row = headers
+
     if (data.action === 'delete') {
-      // Handle delete request
+      // DELETE registration by timestamp
       const values = sheet.getDataRange().getValues();
       for (let i = 1; i < values.length; i++) {
-        if (values[i][0] === data.timestamp) {
-          sheet.deleteRow(i + 1);
-          return ContentService.createTextOutput(JSON.stringify({success: true}))
+        if (values[i][0] === data.timestamp) { // timestamp must be unique
+          sheet.deleteRow(i + 1); // +1 because sheet rows are 1-indexed
+          return ContentService
+            .createTextOutput(JSON.stringify({ success: true }))
             .setMimeType(ContentService.MimeType.JSON);
         }
       }
+      return ContentService
+        .createTextOutput(JSON.stringify({ success: false, error: 'Timestamp not found' }))
+        .setMimeType(ContentService.MimeType.JSON);
     } else {
-      // Handle registration submission
-      sheet.appendRow([
-        data.timestamp,
-        data.retRank,
-        data.familyName,
-        data.firstName,
-        data.mi,
-        data.afpsn,
-        data.dateOfBirth,
-        data.status,
-        data.spouse,
-        data.address,
-        data.cellPhone,
-        data.email,
-        data.dateEntered,
-        data.location,
-        data.rcdu,
-        data.rcdg,
-        data.lastUnit,
-        data.lastLocation,
-        data.retirementDate,
-        data.admissionDate,
-        data.signatureDate,
-        data.signature
-      ]);
+      // ADD new registration
+      // Map headers to values from data
+      const newRow = headers.map(header => data[header.toLowerCase().replace(/ /g, '')] || '');
+      sheet.appendRow(newRow);
+
+      return ContentService
+        .createTextOutput(JSON.stringify({ success: true }))
+        .setMimeType(ContentService.MimeType.JSON);
     }
-    
-    return ContentService.createTextOutput(JSON.stringify({success: true}))
-      .setMimeType(ContentService.MimeType.JSON);
-      
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({success: false, error: error.toString()}))
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: false, error: error.toString() }))
       .setMimeType(ContentService.MimeType.JSON);
   }
 }
 
+// Handle GET requests (Fetch all registrations)
 function doGet(e) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  const data = sheet.getDataRange().getValues();
-  const headers = data[0];
-  const rows = data.slice(1);
-  
-  const jsonData = rows.map(row => {
-    let obj = {};
-    headers.forEach((header, index) => {
-      obj[header.toLowerCase().replace(/ /g, '')] = row[index];
+  try {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    const rows = data.slice(1);
+
+    // Convert rows to JSON objects
+    const jsonData = rows.map(row => {
+      let obj = {};
+      headers.forEach((header, index) => {
+        // key = lowercase + no spaces
+        obj[header.toLowerCase().replace(/ /g, '')] = row[index];
+      });
+      return obj;
     });
-    return obj;
-  });
-  
-  return ContentService.createTextOutput(JSON.stringify(jsonData))
-    .setMimeType(ContentService.MimeType.JSON);
+
+    return ContentService
+      .createTextOutput(JSON.stringify(jsonData))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: false, error: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 // ============================================
 // DEPLOYMENT INSTRUCTIONS:
-// 1. Click "Deploy" button (top right)
-// 2. Select "New deployment"
-// 3. Click gear icon, select "Web app"
-// 4. Set "Execute as" to "Me"
-// 5. Set "Who has access" to "Anyone"
-// 6. Click "Deploy"
-// 7. Copy the Web app URL
-// 8. Paste this URL in both script.js and admin-script.js
+// 1. Click "Deploy" → "New deployment" → "Web app"
+// 2. Execute as: Me
+// 3. Who has access: Anyone
+// 4. Copy the Web App URL and use it in your admin JS
 // ============================================

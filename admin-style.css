@@ -1,3 +1,4 @@
+/* ---------------------- Reset & Base ---------------------- */
 * {
     margin: 0;
     padding: 0;
@@ -9,10 +10,7 @@ body {
     background: #f4f4f4;
 }
 
-.admin-container {
-    min-height: 100vh;
-}
-
+/* ---------------------- Header ---------------------- */
 .admin-header {
     background: linear-gradient(to right, #1a3d0a, #2d5016);
     color: white;
@@ -35,19 +33,21 @@ body {
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
+    transition: background 0.3s;
 }
 
 .btn-logout:hover {
     background: #c82333;
 }
 
-/* Login Section */
+/* ---------------------- Login Section ---------------------- */
 .login-section {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 80px);
+    min-height: 100vh;
     padding: 20px;
+    background: #f4f4f4;
 }
 
 .login-box {
@@ -65,13 +65,56 @@ body {
     text-align: center;
 }
 
-/* Dashboard Content */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #2d5016;
+}
+
+/* Primary button */
+.btn-primary {
+    background: linear-gradient(to right, #2d5016, #4a7c2c);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(to right, #1a3d0a, #2d5016);
+}
+
+/* ---------------------- Dashboard ---------------------- */
 .dashboard-content {
     padding: 40px;
     max-width: 1400px;
     margin: 0 auto;
 }
 
+/* Stats Section */
 .stats-section {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -101,6 +144,7 @@ body {
     color: #2d5016;
 }
 
+/* Controls Section */
 .controls-section {
     background: white;
     padding: 20px;
@@ -119,6 +163,7 @@ body {
     border: 2px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
+    transition: border 0.3s;
 }
 
 #searchInput:focus {
@@ -134,28 +179,14 @@ body {
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
+    transition: background 0.3s;
 }
 
 .btn-secondary:hover {
     background: #5a6268;
 }
 
-.btn-primary {
-    background: linear-gradient(to right, #2d5016, #4a7c2c);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    width: 100%;
-}
-
-.btn-primary:hover {
-    background: linear-gradient(to right, #1a3d0a, #2d5016);
-}
-
-/* Table Section */
+/* ---------------------- Table ---------------------- */
 .table-section {
     background: white;
     border-radius: 8px;
@@ -189,14 +220,19 @@ tbody tr:hover {
     background: #f9f9f9;
 }
 
-.btn-view {
-    background: #007bff;
-    color: white;
+/* Buttons inside table */
+.btn-view, .btn-delete {
     border: none;
     padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
+    transition: background 0.3s;
+}
+
+.btn-view {
+    background: #007bff;
+    color: white;
 }
 
 .btn-view:hover {
@@ -206,11 +242,6 @@ tbody tr:hover {
 .btn-delete {
     background: #dc3545;
     color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
     margin-left: 5px;
 }
 
@@ -218,7 +249,7 @@ tbody tr:hover {
     background: #c82333;
 }
 
-/* Modal */
+/* ---------------------- Modal ---------------------- */
 .modal {
     display: none;
     position: fixed;
@@ -227,7 +258,7 @@ tbody tr:hover {
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
+    overflow-y: auto;
     background-color: rgba(0, 0, 0, 0.5);
 }
 
@@ -277,53 +308,30 @@ tbody tr:hover {
     margin-top: 10px;
 }
 
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    color: #333;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.form-group input:focus {
-    outline: none;
-    border-color: #2d5016;
-}
-
+/* ---------------------- Responsive ---------------------- */
 @media (max-width: 768px) {
     .admin-header {
         flex-direction: column;
         gap: 15px;
         text-align: center;
     }
-    
+
     .dashboard-content {
         padding: 20px;
     }
-    
+
     .controls-section {
         flex-direction: column;
     }
-    
+
     #searchInput {
         min-width: 100%;
     }
-    
+
     table {
         font-size: 12px;
     }
-    
+
     th, td {
         padding: 10px 5px;
     }

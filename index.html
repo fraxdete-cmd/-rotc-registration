@@ -26,7 +26,7 @@
                 <h3>A) PERSONAL DATA:</h3>
                 
                 <div class="form-group">
-                    <label for="name">1) NAME</label>
+                    <label>1) NAME</label>
                     <div class="name-fields">
                         <input type="text" id="retRank" placeholder="Ret Rank" required>
                         <input type="text" id="familyName" placeholder="Family Name" required>
@@ -37,8 +37,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="dob">2) DATE OF BIRTH</label>
-                    <input type="date" id="dob" required>
+                    <label>2) DATE OF BIRTH</label>
+                    <input type="date" id="dateOfBirth" required>
                 </div>
 
                 <div class="form-group">
@@ -52,17 +52,17 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="spouse">4) NAME OF SPOUSE:</label>
+                    <label>4) NAME OF SPOUSE:</label>
                     <input type="text" id="spouse">
                 </div>
 
                 <div class="form-group">
-                    <label for="address">5) PERMANENT HOME ADDRESS</label>
+                    <label>5) PERMANENT HOME ADDRESS</label>
                     <input type="text" id="address" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="contact">6) CONTACT NUMBERS:</label>
+                    <label>6) CONTACT NUMBERS:</label>
                     <div class="contact-fields">
                         <input type="tel" id="cellPhone" placeholder="Cell Phone Nr" required>
                         <input type="email" id="email" placeholder="E-Mail Address" required>
@@ -74,7 +74,7 @@
                 <h3>B) MILITARY SERVICE RECORDS:</h3>
 
                 <div class="form-group">
-                    <label for="dateEntered">1) DATE ENTERED MIL SVC:</label>
+                    <label>1) DATE ENTERED MIL SVC:</label>
                     <div class="military-fields">
                         <input type="date" id="dateEntered" required>
                         <input type="text" id="location" placeholder="Location" required>
@@ -82,7 +82,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="dateAssigned">2) DATE ASSIGNED:</label>
+                    <label>2) DATE ASSIGNED:</label>
                     <div class="military-fields">
                         <input type="text" id="rcdu" placeholder="11RCDU/HDU">
                         <input type="text" id="rcdg" placeholder="11RCDG">
@@ -90,23 +90,25 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="lastUnit">3) LAST UNIT ASSIGNMENT (Retired)</label>
+                    <label>3) LAST UNIT ASSIGNMENT (Retired)</label>
                     <input type="text" id="lastUnit" required>
-                    <label for="lastLocation" style="margin-top: 10px;">LOCATION:</label>
+                    <label style="margin-top: 10px;">LOCATION:</label>
                     <input type="text" id="lastLocation" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="retirementDate">4) DATE OF RETIREMENT & AUTHORITY</label>
+                    <label>4) DATE OF RETIREMENT & AUTHORITY</label>
                     <input type="text" id="retirementDate" required>
                 </div>
             </section>
 
             <section class="form-section certification">
-                <p class="cert-text">I HEREBY CERTIFY THAT THE FOREGOING ENTRIES ARE TRUE AND CORRECT TO THE BEST OF MY KNOWLEDGE AND BELIEF.</p>
-                
+                <p class="cert-text">
+                    I HEREBY CERTIFY THAT THE FOREGOING ENTRIES ARE TRUE AND CORRECT TO THE BEST OF MY KNOWLEDGE AND BELIEF.
+                </p>
+
                 <div class="form-group">
-                    <label for="admissionDate">Date of Admission:</label>
+                    <label>Date of Admission:</label>
                     <input type="date" id="admissionDate" required>
                 </div>
 
@@ -116,13 +118,13 @@
                 </div>
 
                 <div class="signature-section">
-                    <canvas id="signatureCanvas" width="400" height="150"></canvas>
+                    <canvas id="signatureCanvas" width="400" height="150" style="border:1px solid #ccc;"></canvas>
                     <button type="button" id="clearSignature" class="btn-secondary">Clear Signature</button>
                     <p>(Signature)</p>
                 </div>
 
                 <div class="form-group">
-                    <label for="signatureDate">Date:</label>
+                    <label>Date:</label>
                     <input type="date" id="signatureDate" required>
                 </div>
             </section>
@@ -134,6 +136,90 @@
         </form>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // ==========================================
+        // ROTC FORM SUBMISSION SCRIPT
+        // ==========================================
+
+        const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'; // Paste your deployed Web App URL
+
+        const form = document.getElementById('rotcForm');
+        const signatureCanvas = document.getElementById('signatureCanvas');
+        const clearBtn = document.getElementById('clearSignature');
+        const ctx = signatureCanvas.getContext('2d');
+        let drawing = false;
+
+        // Signature canvas events
+        signatureCanvas.addEventListener('mousedown', () => drawing = true);
+        signatureCanvas.addEventListener('mouseup', () => drawing = false);
+        signatureCanvas.addEventListener('mouseout', () => drawing = false);
+        signatureCanvas.addEventListener('mousemove', drawSignature);
+
+        function drawSignature(e) {
+            if (!drawing) return;
+            const rect = signatureCanvas.getBoundingClientRect();
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#000';
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+
+        clearBtn.addEventListener('click', () => {
+            ctx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+        });
+
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Gather form data
+            const data = {
+                timestamp: new Date().toISOString(),
+                retRank: document.getElementById('retRank').value,
+                familyName: document.getElementById('familyName').value,
+                firstName: document.getElementById('firstName').value,
+                mi: document.getElementById('mi').value,
+                afpsn: document.getElementById('afpsn').value,
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                status: document.querySelector('input[name="status"]:checked')?.value || '',
+                spouse: document.getElementById('spouse').value,
+                address: document.getElementById('address').value,
+                cellPhone: document.getElementById('cellPhone').value,
+                email: document.getElementById('email').value,
+                dateEntered: document.getElementById('dateEntered').value,
+                location: document.getElementById('location').value,
+                rcdu: document.getElementById('rcdu').value,
+                rcdg: document.getElementById('rcdg').value,
+                lastUnit: document.getElementById('lastUnit').value,
+                lastLocation: document.getElementById('lastLocation').value,
+                retirementDate: document.getElementById('retirementDate').value,
+                admissionDate: document.getElementById('admissionDate').value,
+                signatureDate: document.getElementById('signatureDate').value,
+                signature: signatureCanvas.toDataURL() // Save signature as Base64
+            };
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Registration submitted successfully!');
+                    form.reset();
+                    ctx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+                } else {
+                    alert('Error submitting registration: ' + result.error);
+                }
+            } catch (err) {
+                alert('Error submitting registration: ' + err);
+            }
+        });
+    </script>
 </body>
 </html>
