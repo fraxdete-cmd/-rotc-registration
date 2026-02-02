@@ -1,0 +1,86 @@
+// ============================================
+// GOOGLE APPS SCRIPT CODE
+// Copy and paste this entire code into your Google Apps Script editor
+// ============================================
+
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    
+    if (data.action === 'delete') {
+      // Handle delete request
+      const values = sheet.getDataRange().getValues();
+      for (let i = 1; i < values.length; i++) {
+        if (values[i][0] === data.timestamp) {
+          sheet.deleteRow(i + 1);
+          return ContentService.createTextOutput(JSON.stringify({success: true}))
+            .setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+    } else {
+      // Handle registration submission
+      sheet.appendRow([
+        data.timestamp,
+        data.retRank,
+        data.familyName,
+        data.firstName,
+        data.mi,
+        data.afpsn,
+        data.dateOfBirth,
+        data.status,
+        data.spouse,
+        data.address,
+        data.cellPhone,
+        data.email,
+        data.dateEntered,
+        data.location,
+        data.rcdu,
+        data.rcdg,
+        data.lastUnit,
+        data.lastLocation,
+        data.retirementDate,
+        data.admissionDate,
+        data.signatureDate,
+        data.signature
+      ]);
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({success: true}))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({success: false, error: error.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const rows = data.slice(1);
+  
+  const jsonData = rows.map(row => {
+    let obj = {};
+    headers.forEach((header, index) => {
+      obj[header.toLowerCase().replace(/ /g, '')] = row[index];
+    });
+    return obj;
+  });
+  
+  return ContentService.createTextOutput(JSON.stringify(jsonData))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ============================================
+// DEPLOYMENT INSTRUCTIONS:
+// 1. Click "Deploy" button (top right)
+// 2. Select "New deployment"
+// 3. Click gear icon, select "Web app"
+// 4. Set "Execute as" to "Me"
+// 5. Set "Who has access" to "Anyone"
+// 6. Click "Deploy"
+// 7. Copy the Web app URL
+// 8. Paste this URL in both script.js and admin-script.js
+// ============================================

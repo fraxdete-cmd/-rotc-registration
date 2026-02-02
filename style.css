@@ -1,0 +1,244 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+header {
+    background: linear-gradient(to right, #1a3d0a, #2d5016);
+    color: white;
+    padding: 30px;
+    border-bottom: 4px solid #d4af37;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo-placeholder {
+    width: 120px;
+    height: 120px;
+    border: 3px solid #d4af37;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    color: #333;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.header-text {
+    flex: 1;
+}
+
+.header-text h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.header-text h2 {
+    font-size: 20px;
+    font-weight: normal;
+    text-decoration: underline;
+    margin-bottom: 10px;
+}
+
+.form-number {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+form {
+    padding: 40px;
+}
+
+.form-section {
+    margin-bottom: 40px;
+}
+
+.form-section h3 {
+    color: #1a3d0a;
+    font-size: 18px;
+    margin-bottom: 20px;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group input[type="tel"],
+.form-group input[type="email"],
+.form-group input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #2d5016;
+}
+
+.name-fields {
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 0.5fr 2fr;
+    gap: 10px;
+}
+
+.contact-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.military-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.radio-group input[type="radio"] {
+    cursor: pointer;
+}
+
+.certification {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #2d5016;
+}
+
+.cert-text {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #1a3d0a;
+    line-height: 1.6;
+}
+
+.signature-section {
+    margin: 20px 0;
+    text-align: center;
+}
+
+#signatureCanvas {
+    border: 2px solid #333;
+    cursor: crosshair;
+    background: white;
+    display: block;
+    margin: 0 auto 10px;
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: linear-gradient(to right, #2d5016, #4a7c2c);
+    color: white;
+    flex: 2;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(to right, #1a3d0a, #2d5016);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    flex: 1;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+@media (max-width: 768px) {
+    .name-fields {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-fields,
+    .military-fields {
+        grid-template-columns: 1fr;
+    }
+    
+    .logo-section {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    #signatureCanvas {
+        width: 100%;
+        height: auto;
+    }
+}
